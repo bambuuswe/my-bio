@@ -1,3 +1,28 @@
+html, body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  color: white;
+  cursor: pointer;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
+}
+
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 #volumeControl {
   position: fixed;
   top: 20px;
@@ -14,5 +39,5 @@
 
 #volumeSlider {
   width: 80px;
-  cursor: pointer;
 }
+
