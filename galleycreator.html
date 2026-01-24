@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gallery Creator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.container {
+  background: rgba(0,0,0,0.7);
+  padding: 20px;
+  border-radius: 15px;
+  width: 400px;
+  text-align: center;
+}
+
+input, button {
+  padding: 8px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1em;
+}
+
+button {
+  cursor: pointer;
+  background: #ff4d4d;
+  color: #fff;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff1a1a;
+}
+
+#galleryList {
+  margin-top: 15px;
+  text-align: left;
+}
+
+#galleryList div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  margin: 5px 0;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Gallery Creator</h1>
+  
+  <input type="text" id="gameName" placeholder="Game name (e.g., Roblox)">
+  <input type="text" id="imgFile" placeholder="Image file name (e.g., roblox.jpg)">
+  <br>
+  <button id="addBtn">Add to Gallery</button>
+  
+  <div id="galleryList"></div>
+  
+  <h3>Generated HTML for index.html:</h3>
+  <textarea id="generatedHTML" rows="8" style="width:100%;"></textarea>
+</div>
+
+<script>
+const galleryList = document.getElementById("galleryList");
+const generatedHTML = document.getElementById("generatedHTML");
+let galleryItems = [];
+
+function renderList(){
+  galleryList.innerHTML = "";
+  galleryItems.forEach((item,index)=>{
+    const div = document.createElement("div");
+    div.textContent = `${item.name} - ${item.img}`;
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.onclick = ()=> {
+      galleryItems.splice(index,1);
+      renderList();
+      updateHTML();
+    };
+    div.appendChild(removeBtn);
+    galleryList.appendChild(div);
+  });
+}
+
+function updateHTML(){
+  let html = "";
+  galleryItems.forEach(item=>{
+    html += `<img src="${item.img}" data-game="${item.name}" alt="${item.name}">\n`;
+  });
+  generatedHTML.value = html.trim();
+}
+
+document.getElementById("addBtn").addEventListener("click", ()=>{
+  const name = document.getElementById("gameName").value.trim();
+  const img = document.getElementById("imgFile").value.trim();
+  if(name && img){
+    galleryItems.push({name,img});
+    renderList();
+    updateHTML();
+    document.getElementById("gameName").value="";
+    document.getElementById("imgFile").value="";
+  }
+});
+</script>
+</body>
+</html>
