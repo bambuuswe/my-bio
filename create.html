@@ -5,31 +5,16 @@
 <title>Create Your Bio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: 'Poppins', sans-serif; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; background-size: cover; background-position: center; background-repeat: no-repeat; position:relative; }
+body { font-family: 'Poppins', sans-serif; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; background-size: cover; background-position: center; background-repeat: no-repeat; }
 .container { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border-radius: 20px; padding:30px; width:400px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); color: #fff; }
 input, textarea, select { width:90%; margin:10px 0; padding:8px; border-radius:8px; border:none; font-size:1em; }
 button { padding:10px 20px; background:#ff4d4d; border:none; border-radius:10px; color:#fff; font-size:1em; cursor:pointer; margin:5px; }
 button:hover { background:#ff1a1a; }
 #output { width:100%; height:350px; margin-top:15px; }
 .avatar-preview { width:100px; height:100px; border-radius:50%; margin:10px auto; object-fit:cover; border:3px solid #fff; display:block; }
-
-/* Overlay och ljudkontroll */
-#overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85); color: #fff;
-  display: flex; justify-content: center; align-items: center;
-  font-size: 2rem; cursor: pointer; transition: opacity 0.8s ease; z-index: 1000;
-}
-#overlay.hidden { opacity: 0; pointer-events: none; }
-
-#volumeControl {
-  position: fixed; top: 20px; right: 20px; z-index: 1100; display:flex; align-items:center; gap:5px; color:#fff;
-}
 </style>
 </head>
 <body>
-
 <div class="container">
   <h1>Create Your Bio</h1>
   
@@ -61,21 +46,10 @@ button:hover { background:#ff1a1a; }
   <textarea id="output"></textarea>
 </div>
 
-<!-- Overlay och musik (för generated page) -->
-<div id="overlay">Click to enter ▶</div>
-<audio id="bgAudio" loop>
-  <source src="https://raw.githubusercontent.com/bambuuswe/my-bio/main/music.mp3" type="audio/mpeg">
-</audio>
-<div id="volumeControl">
-  🔊
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
-</div>
-
 <script>
 const avatarInput = document.getElementById("avatarUpload");
 const avatarPreview = document.getElementById("avatarPreview");
 const bgUpload = document.getElementById("bgUpload");
-
 let bgImage = "";
 
 avatarInput.addEventListener("change", () => {
@@ -103,22 +77,15 @@ function generateHTML(){
   const titleColor = document.getElementById("titleColor").value;
   const bio = document.getElementById("bio").value;
   const bioColor = document.getElementById("bioColor").value;
-  const links = [
-    document.getElementById("link1").value,
-    document.getElementById("link2").value,
-    document.getElementById("link3").value
-  ].filter(l => l); 
+  const links = [document.getElementById("link1").value, document.getElementById("link2").value, document.getElementById("link3").value].filter(l => l); 
   const avatar = avatarPreview.src;
-
   const bgChoice = document.getElementById("backgroundChoice").value;
   let bgCSS = bgChoice === "gradient" ? 
       "background: linear-gradient(135deg, #6a11cb, #2575fc);" : 
       `background: url('${bgImage}') no-repeat center center / cover;`;
 
   let linksHTML = "";
-  links.forEach(l => {
-    linksHTML += `<a href="${l}" target="_blank">${l}</a>\n`;
-  });
+  links.forEach(l => { linksHTML += `<a href="${l}" target="_blank">${l}</a>\n`; });
 
   const html = `
 <!DOCTYPE html>
@@ -128,7 +95,7 @@ function generateHTML(){
 <title>${name}'s Bio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: 'Poppins', sans-serif; ${bgCSS} color:#fff; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; position:relative; }
+body { font-family: 'Poppins', sans-serif; ${bgCSS} color:#fff; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
 .bio-card { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border-radius: 20px; padding:30px; max-width:400px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); }
 .avatar { width:100px; height:100px; border-radius:50%; margin:10px auto; object-fit:cover; border:3px solid #fff; display:block; }
 h1 { margin:10px 0 5px; font-size:1.8em; color:${nameColor}; text-shadow:0 0 10px ${nameColor},0 0 20px ${nameColor}; }
@@ -136,20 +103,17 @@ h3 { margin:5px 0 15px; font-weight:400; color:${titleColor}; }
 p { font-size:1em; margin-bottom:15px; color:${bioColor}; }
 a { display:inline-block; padding:10px 20px; background:#ff4d4d; color:#fff; border-radius:10px; text-decoration:none; transition:0.3s; margin:5px; }
 a:hover { background:#ff1a1a; }
-#overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #fff; display:flex; justify-content:center; align-items:center; font-size:2rem; cursor:pointer; transition: opacity 0.8s ease; z-index:1000; }
+#overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); color:#fff; display:flex; justify-content:center; align-items:center; font-size:2rem; cursor:pointer; transition: opacity 0.8s ease; z-index:1000; }
 #overlay.hidden { opacity:0; pointer-events:none; }
-#volumeControl { position: fixed; top: 20px; right: 20px; z-index:1100; display:flex; align-items:center; gap:5px; color:#fff; }
 </style>
 </head>
 <body>
+
 <div id="overlay">Click to enter ▶</div>
+
 <audio id="bgAudio" loop>
   <source src="https://raw.githubusercontent.com/bambuuswe/my-bio/main/music.mp3" type="audio/mpeg">
 </audio>
-<div id="volumeControl">
-  🔊
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
-</div>
 
 <div class="bio-card">
 <img src="${avatar}" class="avatar" alt="Avatar">
@@ -162,19 +126,14 @@ ${linksHTML}
 <script>
 const overlay = document.getElementById("overlay");
 const audio = document.getElementById("bgAudio");
-const volumeSlider = document.getElementById("volumeSlider");
-audio.volume = volumeSlider.value;
 
 overlay.addEventListener("click", () => {
-  audio.play().then(()=>console.log("Musik spelas!")).catch(err=>console.error("Audio kunde inte spelas:", err));
+  audio.play().catch(err => console.error("Audio kunde inte spelas:", err));
   overlay.classList.add("hidden");
-  setTimeout(()=>overlay.style.display="none",800);
-});
-
-volumeSlider.addEventListener("input", () => {
-  audio.volume = volumeSlider.value;
+  setTimeout(() => { overlay.style.display = "none"; }, 800);
 });
 </script>
+
 </body>
 </html>
   `.trim();
@@ -186,7 +145,7 @@ function downloadHTML(){
   const blob = new Blob([document.getElementById("output").value], {type:"text/html"});
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "profile.html";
+  link.download = "index.html";
   link.click();
 }
 </script>
