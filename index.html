@@ -46,6 +46,23 @@ volumeSlider.addEventListener("input", () => {
 </div>
 
 <!-- resten av din sida här -->
+  <script>
+const overlay = document.getElementById("overlay");
+const audio = document.getElementById("bgAudio");
+const volumeSlider = document.getElementById("volumeSlider");
+
+audio.volume = volumeSlider.value;
+
+overlay.addEventListener("click", () => {
+  audio.play().catch(err => console.log("Audio blocked:", err));
+  overlay.classList.add("hidden");
+});
+
+volumeSlider.addEventListener("input", () => {
+  audio.volume = volumeSlider.value;
+});
+</script>
+
 </body>
 
 
