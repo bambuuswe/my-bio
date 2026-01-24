@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Bambuu's Bio</title>
+<title>𝕭𝖆𝖒𝖇𝖚𝖚's Bio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -16,6 +16,25 @@ body {
   background: url('background1.jpg') no-repeat center center / cover;
 }
 
+/* Overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: opacity 0.8s ease;
+  z-index: 1000;
+}
+#overlay.hidden { opacity: 0; pointer-events: none; }
+
 /* Bio-card */
 .bio-card {
   background: rgba(0,0,0,0.6);
@@ -26,8 +45,8 @@ body {
   text-align: center;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   transition: transform 0.3s, box-shadow 0.3s;
+  perspective: 1000px;
 }
-
 .bio-card:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow: 0 10px 30px rgba(0,0,0,0.7);
@@ -44,17 +63,14 @@ body {
   display: block;
   transition: transform 0.3s;
 }
-
-.avatar:hover {
-  transform: scale(1.1) rotate(5deg);
-}
+.avatar:hover { transform: scale(1.1) rotate(5deg); }
 
 /* Text */
-h1 { margin: 10px 0 5px; font-size: 1.8em; color: #DE0000; text-shadow: 0 0 10px #DE0000, 0 0 20px #DE0000; }
+h1 { margin: 10px 0 5px; font-size: 1.8em; color: #DE0000; text-shadow: 0 0 10px #DE0000,0 0 20px #DE0000; }
 h3 { margin: 5px 0 15px; font-weight: 400; color: #cccccc; }
 p { font-size: 1em; margin-bottom: 15px; color: #fff; }
 
-/* Links / Buttons */
+/* Links */
 a {
   display: inline-block;
   padding: 10px 20px;
@@ -65,40 +81,30 @@ a {
   transition: transform 0.2s, background 0.2s;
   margin: 5px;
 }
-
-a:hover {
-  transform: scale(1.1);
-  background: #ff1a1a;
-}
+a:hover { transform: scale(1.1); background: #ff1a1a; }
 
 /* Currently Playing */
-.currently-playing {
-  margin-top: 15px;
-  font-size: 1.1em;
-  color: #00ffff;
-  font-weight: bold;
-}
+.currently-playing { margin-top: 15px; font-size: 1em; color: #FF0000; font-weight: bold; }
 
-/* Game gallery */
-.game-gallery {
+/* Game icons box */
+.game-icons {
+  margin-top: 10px;
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 10px;
-  margin-top: 15px;
 }
-
-.game-gallery img {
-  width: 60px;
-  height: 60px;
-  border: 3px solid transparent;
+.game-icons img {
+  width: 50px;
+  height: 50px;
   border-radius: 10px;
-  transition: transform 0.3s, border 0.3s;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+  transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
 }
-
-.game-gallery img.highlight {
-  border: 3px solid #00ff00;
-  transform: scale(1.1);
+.game-icons img.highlight {
+  transform: scale(1.2) rotate(-3deg);
+  box-shadow: 0 0 20px #FF0000;
+  filter: brightness(1.3);
 }
 
 /* Volume slider */
@@ -113,31 +119,7 @@ a:hover {
   font-size: 1.2em;
   z-index: 1001;
 }
-
-#volumeSlider {
-  cursor: pointer;
-}
-
-/* Overlay */
-#overlay {
-  position: fixed;
-  top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.85);
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:2rem;
-  cursor:pointer;
-  transition: opacity 0.8s ease;
-  z-index:1000;
-}
-
-#overlay.hidden {
-  opacity:0;
-  pointer-events:none;
-}
-
+#volumeSlider { cursor: pointer; }
 </style>
 </head>
 <body>
@@ -154,75 +136,69 @@ a:hover {
 <div class="bio-card">
   <img src="avatar.png" class="avatar" alt="Avatar">
   <h1>Bambuu</h1>
-  <h3>Gamer & Youtuber</h3>
+  <h3>Gamer & YouTuber</h3>
   <p>Hey there! I'm a small YouTuber who loves gaming and exploring new worlds in my favorite games. I enjoy creating fun content, sharing my adventures, and connecting with fellow gamers. Every day is a chance to level up, learn new tricks, and have a great time along the way!</p>
-
   <a href="https://youtube.com/@bambuuspelar" target="_blank">My YouTube</a>
   <a href="https://discord.com/users/1032996748798480525" target="_blank">My Discord</a>
 
+  <!-- Currently Playing -->
   <div class="currently-playing">
-    🎮 Currently Playing: <span id="currentGame">Loading...</span>
+    🎮 Currently Playing: <span id="gameText">Roblox</span>
   </div>
 
-  <div class="game-gallery">
-    <img src="r6.jpg" alt="R6 Siege" data-game="R6 Siege">
-    <img src="ets21.jpg" alt="ETS2" data-game="ETS2">
-    <img src="minecraft1.jpg" alt="Minecraft" data-game="Minecraft">
+  <!-- Game icons -->
+  <div class="game-icons">
     <img src="roblox1.jpg" alt="Roblox" data-game="Roblox">
+    <img src="r6.jpg" alt="R6 Siege" data-game="R6 Siege">
+    <img src="minecraft1.jpg" alt="Minecraft" data-game="Minecraft">
+    <img src="ets21.jpg" alt="ETS2" data-game="ETS2">
   </div>
 </div>
 
 <!-- Volume Control -->
 <div id="volumeControl">
-  🔊
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+  🔊 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 </div>
 
 <script>
-// Elements
+// Element references
 const overlay = document.getElementById("overlay");
 const audio = document.getElementById("bgAudio");
 const volumeSlider = document.getElementById("volumeSlider");
-const currentGameSpan = document.getElementById("currentGame");
-const gameImages = document.querySelectorAll(".game-gallery img");
+const gameText = document.getElementById("gameText");
+const gameIcons = document.querySelectorAll('.game-icons img');
 
 // Initial volume
 audio.volume = volumeSlider.value;
 
-// Overlay click to play music
+// Overlay click
 overlay.addEventListener("click", () => {
   audio.play().catch(err => console.log("Audio blocked:", err));
   overlay.classList.add("hidden");
-  setTimeout(() => overlay.style.display="none", 800);
+  setTimeout(() => overlay.style.display = "none", 800);
 });
 
 // Volume slider
-volumeSlider.addEventListener("input", () => {
-  audio.volume = volumeSlider.value;
-});
+volumeSlider.addEventListener("input", () => { audio.volume = volumeSlider.value; });
 
-// Update currently playing from JSON
-async function updateGame() {
-  try {
-    const response = await fetch('discord_status.json?' + new Date().getTime());
-    const data = await response.json();
-    const game = data.current_game || "Nothing";
-    currentGameSpan.textContent = game;
+// Currently Playing rotation
+const games = ["Roblox", "R6 Siege", "Minecraft", "ETS2"];
+let currentIndex = 0;
 
-    // Highlight correct image
-    gameImages.forEach(img => {
-      if(img.dataset.game === game) img.classList.add("highlight");
-      else img.classList.remove("highlight");
-    });
+function updateGame() {
+  const currentGame = games[currentIndex];
+  gameText.textContent = currentGame;
 
-  } catch(err) {
-    console.error("Error loading JSON:", err);
-  }
+  // Highlight correct icon
+  gameIcons.forEach(img => {
+    img.classList.toggle('highlight', img.dataset.game === currentGame);
+  });
+
+  currentIndex = (currentIndex + 1) % games.length;
 }
 
-// Update every 5 sec
+setInterval(updateGame, 3000); // byter spel var 3:e sekund
 updateGame();
-setInterval(updateGame, 5000);
 </script>
 </body>
 </html>
