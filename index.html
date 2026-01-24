@@ -4,25 +4,26 @@
 <meta charset="UTF-8">
 <title>𝕭𝖆𝖒𝖇𝖚𝖚's Bio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('background1.jpg') no-repeat center center / cover;
+  background: url("background1.jpg") no-repeat center center / cover;
 }
 
-/* Overlay */
+/* OVERLAY */
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0,0,0,0.85);
   color: #fff;
   display: flex;
@@ -39,7 +40,7 @@ body {
   pointer-events: none;
 }
 
-/* Bio-card */
+/* BIO CARD */
 .bio-card {
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(10px);
@@ -49,7 +50,6 @@ body {
   text-align: center;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   transition: transform 0.3s, box-shadow 0.3s;
-  perspective: 1000px;
 }
 
 .bio-card:hover {
@@ -57,7 +57,7 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
-/* Avatar */
+/* AVATAR */
 .avatar {
   width: 100px;
   height: 100px;
@@ -65,7 +65,6 @@ body {
   margin: 10px auto;
   object-fit: cover;
   border: 3px solid #fff;
-  display: block;
   transition: transform 0.3s;
 }
 
@@ -73,12 +72,27 @@ body {
   transform: scale(1.1) rotate(5deg);
 }
 
-/* Text */
-h1 { margin: 10px 0 5px; font-size: 1.8em; color: #DE0000; text-shadow: 0 0 10px #DE0000, 0 0 20px #DE0000; }
-h3 { margin: 5px 0 15px; font-weight: 400; color: #cccccc; }
-p { font-size: 1em; margin-bottom: 15px; color: #fff; }
+/* TEXT */
+h1 {
+  margin: 10px 0 5px;
+  font-size: 1.8em;
+  color: #DE0000;
+  text-shadow: 0 0 10px #DE0000, 0 0 20px #DE0000;
+}
 
-/* Links / Buttons */
+h3 {
+  margin: 5px 0 15px;
+  font-weight: 400;
+  color: #ccc;
+}
+
+p {
+  font-size: 1em;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+/* LINKS */
 a {
   display: inline-block;
   padding: 10px 20px;
@@ -86,8 +100,8 @@ a {
   color: #fff;
   border-radius: 10px;
   text-decoration: none;
-  transition: transform 0.2s, background 0.2s;
   margin: 5px;
+  transition: transform 0.2s, background 0.2s;
 }
 
 a:hover {
@@ -95,74 +109,116 @@ a:hover {
   background: #ff1a1a;
 }
 
-/* Volume slider */
+/* CURRENTLY PLAYING */
+.currently-playing {
+  margin-top: 15px;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 8px #00ffff;
+}
+
+.currently-playing .label {
+  display: block;
+  font-size: 0.9em;
+  color: #ccc;
+  text-shadow: none;
+}
+
+#gameText {
+  transition: opacity 0.4s ease;
+}
+
+/* VOLUME */
 #volumeControl {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  color: #fff;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 12px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 1.2em;
+  gap: 6px;
+  color: #fff;
   z-index: 1001;
-}
-
-#volumeSlider {
-  cursor: pointer;
 }
 </style>
 </head>
+
 <body>
 
-<!-- Overlay -->
+<!-- OVERLAY -->
 <div id="overlay">Click to enter ▶</div>
 
-<!-- Audio -->
+<!-- AUDIO -->
 <audio id="bgAudio" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Bio Card -->
+<!-- BIO CARD -->
 <div class="bio-card">
   <img src="avatar.png" class="avatar" alt="Avatar">
   <h1>Bambuu</h1>
-  <h3>Gamer & Youtuber</h3>
-  <p>Hey there! I'm a small YouTuber who loves gaming and exploring new worlds in my favorite games. I enjoy creating fun content, sharing my adventures, and connecting with fellow gamers. Every day is a chance to level up, learn new tricks, and have a great time along the way!</p>
-  <a href="https://youtube.com/@bambuuspelar" target="_blank">My YouTube</a>
-  <a href="https://discord.com/users/1032996748798480525" target="_blank">My Discord</a>
+  <h3>Gamer & YouTuber</h3>
+
+  <p>
+    I'm a small YouTuber who loves gaming and exploring new worlds.
+    I enjoy creating chill and fun content, leveling up my skills,
+    and sharing the journey with other gamers.
+  </p>
+
+  <a href="https://youtube.com/@bambuuspelar" target="_blank">YouTube</a>
+  <a href="https://discord.com/users/1032996748798480525" target="_blank">Discord</a>
+
+  <div class="currently-playing">
+    <span class="label">🎮 Currently Playing</span>
+    <span id="gameText">Roblox</span>
+  </div>
 </div>
 
-<!-- Volume Control -->
+<!-- VOLUME -->
 <div id="volumeControl">
   🔊
   <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 </div>
 
 <script>
-// Element references
 const overlay = document.getElementById("overlay");
 const audio = document.getElementById("bgAudio");
 const volumeSlider = document.getElementById("volumeSlider");
 
-// Set initial volume
 audio.volume = volumeSlider.value;
 
-// Overlay click to start music
 overlay.addEventListener("click", () => {
-  audio.play().then(() => {
-    console.log("Musik spelas!");
-  }).catch(err => console.error("Audio kunde inte spelas:", err));
-
+  audio.play().catch(err => console.log(err));
   overlay.classList.add("hidden");
-  setTimeout(() => { overlay.style.display = "none"; }, 800);
+  setTimeout(() => overlay.style.display = "none", 800);
 });
 
-// Volume slider
 volumeSlider.addEventListener("input", () => {
   audio.volume = volumeSlider.value;
-  console.log("Volym ändrad till:", volumeSlider.value);
 });
+
+/* CURRENTLY PLAYING ROTATION */
+const games = [
+  "Roblox",
+  "Rainbow Six Siege",
+  "Minecraft",
+  "Euro Truck Simulator 2"
+];
+
+let index = 0;
+const gameText = document.getElementById("gameText");
+
+setInterval(() => {
+  gameText.style.opacity = 0;
+  setTimeout(() => {
+    index = (index + 1) % games.length;
+    gameText.textContent = games[index];
+    gameText.style.opacity = 1;
+  }, 400);
+}, 2500);
 </script>
 
 </body>
