@@ -28,11 +28,12 @@ html, body {
 }
 
 
-/* VOLUME CONTROL */
+/* VOLUME CONTROL UNDER BIO-CARD */
 #volumeControl {
-  position: fixed;
-  top: 20px;
-  left: 20px;
+  position: absolute;      /* absolut position relativt body */
+  bottom: 50px;            /* 50px från botten */
+  left: 50%;               /* centrerad horisontellt */
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -44,5 +45,5 @@ html, body {
 }
 
 #volumeSlider {
-  width: 80px;
+  width: 150px; /* gör slidern bredare under kortet */
 }
