@@ -41,7 +41,33 @@ a:hover { background:#ff1a1a; }
   }
   .avatar:hover {
     transform: scale(1.1) rotate(5deg);
-  }
+/* Bio-card interaktiv rotation beroende på mus */
+.bio-card {
+  perspective: 1000px; /* behövs för 3D-effekt */
+}
+
+.bio-card:hover {
+  /* Behåll befintlig hover-effekt */
+}
+
+/* Knapp-effekt */
+a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #ff4d4d;
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+  margin: 5px;
+}
+
+a:hover {
+  transform: scale(1.1);
+  background: #ff1a1a;
+}
+
+ 
 </style>
 </head>
 <body>
@@ -87,6 +113,20 @@ a:hover { background:#ff1a1a; }
 </script>
 
 </body>
+<script>
+const bioCard = document.querySelector(".bio-card");
+
+bioCard.addEventListener("mousemove", e => {
+  const rect = bioCard.getBoundingClientRect();
+  const x = e.clientX - rect.left - rect.width/2;
+  const y = e.clientY - rect.top - rect.height/2;
+  bioCard.style.transform = `rotateY(${x/15}deg) rotateX(${-y/15}deg)`;
+});
+
+bioCard.addEventListener("mouseleave", () => {
+  bioCard.style.transform = `rotateY(0deg) rotateX(0deg)`;
+});
+</script>
 
 
 
