@@ -10,7 +10,7 @@ body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #
 input, textarea { width:90%; margin:10px 0; padding:8px; border-radius:8px; border:none; font-size:1em; }
 button { padding:10px 20px; background:#ff4d4d; border:none; border-radius:10px; color:#fff; font-size:1em; cursor:pointer; margin:5px; }
 button:hover { background:#ff1a1a; }
-#output { width:100%; height:200px; margin-top:15px; }
+#output { width:100%; height:300px; margin-top:15px; }
 .avatar-preview { width:100px; height:100px; border-radius:50%; margin:10px auto; object-fit:cover; border:3px solid #fff; display:block; }
 </style>
 </head>
@@ -18,8 +18,11 @@ button:hover { background:#ff1a1a; }
 <div class="container">
   <h1>Create Your Bio</h1>
   <input id="name" placeholder="Name"><br>
+  <input type="color" id="nameColor" value="#00ffff"> Choose Name Color<br>
   <input id="title" placeholder="Title"><br>
+  <input type="color" id="titleColor" value="#cccccc"> Choose Title Color<br>
   <textarea id="bio" placeholder="Bio"></textarea><br>
+  <input type="color" id="bioColor" value="#ffffff"> Choose Bio Color<br>
   <input id="link1" placeholder="Link 1 (full URL)"><br>
   <input id="link2" placeholder="Link 2 (optional)"><br>
   <input id="link3" placeholder="Link 3 (optional)"><br>
@@ -46,13 +49,16 @@ avatarInput.addEventListener("change", () => {
 
 function generateHTML(){
   const name = document.getElementById("name").value;
+  const nameColor = document.getElementById("nameColor").value;
   const title = document.getElementById("title").value;
+  const titleColor = document.getElementById("titleColor").value;
   const bio = document.getElementById("bio").value;
+  const bioColor = document.getElementById("bioColor").value;
   const links = [
     document.getElementById("link1").value,
     document.getElementById("link2").value,
     document.getElementById("link3").value
-  ].filter(l => l); // Ta bort tomma länkar
+  ].filter(l => l); 
   const avatar = avatarPreview.src;
 
   let linksHTML = "";
@@ -71,9 +77,9 @@ function generateHTML(){
 body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #6a11cb, #2575fc); color: #fff; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
 .bio-card { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border-radius: 20px; padding:30px; max-width:400px; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.5); }
 .avatar { width:100px; height:100px; border-radius:50%; margin:10px auto; object-fit:cover; border:3px solid #fff; display:block; }
-h1 { margin:10px 0 5px; font-size:1.8em; color:#00ffff; text-shadow:0 0 10px #00ffff, 0 0 20px #00ffff; }
-h3 { margin:5px 0 15px; font-weight:400; color:#ccc; }
-p { font-size:1em; margin-bottom:15px; }
+h1 { margin:10px 0 5px; font-size:1.8em; color:${nameColor}; text-shadow:0 0 10px ${nameColor}, 0 0 20px ${nameColor}; }
+h3 { margin:5px 0 15px; font-weight:400; color:${titleColor}; }
+p { font-size:1em; margin-bottom:15px; color:${bioColor}; }
 a { display:inline-block; padding:10px 20px; background:#ff4d4d; color:#fff; border-radius:10px; text-decoration:none; transition:0.3s; margin:5px; }
 a:hover { background:#ff1a1a; }
 </style>
