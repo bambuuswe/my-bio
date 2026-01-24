@@ -15,13 +15,13 @@ html, body {
   color: white;
   cursor: pointer;
   z-index: 9999;
-  transition: opacity 0.5s ease;
 }
 
 #overlay.hidden {
   opacity: 0;
   pointer-events: none;
 }
+
 
 #volumeControl {
   position: fixed;
