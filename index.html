@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>𝕭𝖆𝖒𝖇𝖚𝖚's Bio</title>
+<title>Bambuu's Bio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body {
@@ -16,25 +16,6 @@ body {
   background: url('background1.jpg') no-repeat center center / cover;
 }
 
-/* Overlay */
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
-  cursor: pointer;
-  transition: opacity 0.8s ease;
-  z-index: 1000;
-}
-#overlay.hidden { opacity: 0; pointer-events: none; }
-
 /* Bio-card */
 .bio-card {
   background: rgba(0,0,0,0.6);
@@ -45,8 +26,8 @@ body {
   text-align: center;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   transition: transform 0.3s, box-shadow 0.3s;
-  perspective: 1000px;
 }
+
 .bio-card:hover {
   transform: translateY(-10px) scale(1.02);
   box-shadow: 0 10px 30px rgba(0,0,0,0.7);
@@ -63,14 +44,17 @@ body {
   display: block;
   transition: transform 0.3s;
 }
-.avatar:hover { transform: scale(1.1) rotate(5deg); }
+
+.avatar:hover {
+  transform: scale(1.1) rotate(5deg);
+}
 
 /* Text */
 h1 { margin: 10px 0 5px; font-size: 1.8em; color: #DE0000; text-shadow: 0 0 10px #DE0000, 0 0 20px #DE0000; }
 h3 { margin: 5px 0 15px; font-weight: 400; color: #cccccc; }
-p { font-size:1em; margin-bottom:15px; color:#fff; }
+p { font-size: 1em; margin-bottom: 15px; color: #fff; }
 
-/* Links */
+/* Links / Buttons */
 a {
   display: inline-block;
   padding: 10px 20px;
@@ -81,7 +65,41 @@ a {
   transition: transform 0.2s, background 0.2s;
   margin: 5px;
 }
-a:hover { transform: scale(1.1); background: #ff1a1a; }
+
+a:hover {
+  transform: scale(1.1);
+  background: #ff1a1a;
+}
+
+/* Currently Playing */
+.currently-playing {
+  margin-top: 15px;
+  font-size: 1.1em;
+  color: #00ffff;
+  font-weight: bold;
+}
+
+/* Game gallery */
+.game-gallery {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.game-gallery img {
+  width: 60px;
+  height: 60px;
+  border: 3px solid transparent;
+  border-radius: 10px;
+  transition: transform 0.3s, border 0.3s;
+}
+
+.game-gallery img.highlight {
+  border: 3px solid #00ff00;
+  transform: scale(1.1);
+}
 
 /* Volume slider */
 #volumeControl {
@@ -95,15 +113,31 @@ a:hover { transform: scale(1.1); background: #ff1a1a; }
   font-size: 1.2em;
   z-index: 1001;
 }
-#volumeSlider { cursor: pointer; }
 
-/* Currently Playing */
-.currently-playing {
-  margin-top: 15px;
-  font-size: 1.1em;
-  color: #00ffff;
-  text-shadow: 0 0 5px #00ffff;
+#volumeSlider {
+  cursor: pointer;
 }
+
+/* Overlay */
+#overlay {
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.85);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2rem;
+  cursor:pointer;
+  transition: opacity 0.8s ease;
+  z-index:1000;
+}
+
+#overlay.hidden {
+  opacity:0;
+  pointer-events:none;
+}
+
 </style>
 </head>
 <body>
@@ -122,12 +156,19 @@ a:hover { transform: scale(1.1); background: #ff1a1a; }
   <h1>Bambuu</h1>
   <h3>Gamer & Youtuber</h3>
   <p>Hey there! I'm a small YouTuber who loves gaming and exploring new worlds in my favorite games. I enjoy creating fun content, sharing my adventures, and connecting with fellow gamers. Every day is a chance to level up, learn new tricks, and have a great time along the way!</p>
+
   <a href="https://youtube.com/@bambuuspelar" target="_blank">My YouTube</a>
   <a href="https://discord.com/users/1032996748798480525" target="_blank">My Discord</a>
 
-  <!-- Currently Playing -->
   <div class="currently-playing">
-    🎮 Currently Playing: <span id="gameText">Loading...</span>
+    🎮 Currently Playing: <span id="currentGame">Loading...</span>
+  </div>
+
+  <div class="game-gallery">
+    <img src="r6.jpg" alt="R6 Siege" data-game="R6 Siege">
+    <img src="ets2.jpg" alt="ETS2" data-game="ETS2">
+    <img src="minecraft.jpg" alt="Minecraft" data-game="Minecraft">
+    <img src="roblox.jpg" alt="Roblox" data-game="Roblox">
   </div>
 </div>
 
@@ -142,37 +183,46 @@ a:hover { transform: scale(1.1); background: #ff1a1a; }
 const overlay = document.getElementById("overlay");
 const audio = document.getElementById("bgAudio");
 const volumeSlider = document.getElementById("volumeSlider");
-const gameText = document.getElementById("gameText");
+const currentGameSpan = document.getElementById("currentGame");
+const gameImages = document.querySelectorAll(".game-gallery img");
 
-// Set initial volume
+// Initial volume
 audio.volume = volumeSlider.value;
 
-// Overlay click
+// Overlay click to play music
 overlay.addEventListener("click", () => {
-  audio.play().catch(err => console.error("Audio error:", err));
+  audio.play().catch(err => console.log("Audio blocked:", err));
   overlay.classList.add("hidden");
-  setTimeout(() => overlay.style.display = "none", 800);
+  setTimeout(() => overlay.style.display="none", 800);
 });
 
 // Volume slider
-volumeSlider.addEventListener("input", () => { audio.volume = volumeSlider.value; });
+volumeSlider.addEventListener("input", () => {
+  audio.volume = volumeSlider.value;
+});
 
-// Fetch Discord status every 10s
+// Update currently playing from JSON
 async function updateGame() {
   try {
-    const res = await fetch('discord_status.json'); // fil från din bot
-    const data = await res.json();
-    gameText.textContent = data.current_game || "Nothing";
-  } catch(e) {
-    console.error("Could not fetch Discord status:", e);
-    gameText.textContent = "Offline";
+    const response = await fetch('discord_status.json?' + new Date().getTime());
+    const data = await response.json();
+    const game = data.current_game || "Nothing";
+    currentGameSpan.textContent = game;
+
+    // Highlight correct image
+    gameImages.forEach(img => {
+      if(img.dataset.game === game) img.classList.add("highlight");
+      else img.classList.remove("highlight");
+    });
+
+  } catch(err) {
+    console.error("Error loading JSON:", err);
   }
 }
 
-// Start interval
+// Update every 5 sec
 updateGame();
-setInterval(updateGame, 10000); // varje 10 sekunder
+setInterval(updateGame, 5000);
 </script>
-
 </body>
 </html>
