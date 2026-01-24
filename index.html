@@ -16,22 +16,6 @@ a { display:inline-block; padding:10px 20px; background:#ff4d4d; color:#fff; bor
 a:hover { background:#ff1a1a; }
 </style>
 </head>
-  <script>
-const overlay = document.getElementById("overlay");
-const audio = document.getElementById("bgAudio");
-const volumeSlider = document.getElementById("volumeSlider");
-
-audio.volume = volumeSlider.value;
-
-overlay.addEventListener("click", () => {
-  audio.play();
-  overlay.classList.add("hidden");
-});
-
-volumeSlider.addEventListener("input", () => {
-  audio.volume = volumeSlider.value;
-});
-</script>
 <body>
 
 <div id="overlay">Click to enter ▶</div>
@@ -46,22 +30,28 @@ volumeSlider.addEventListener("input", () => {
 </div>
 
 <!-- resten av din sida här -->
-  <script>
-const overlay = document.getElementById("overlay");
-const audio = document.getElementById("bgAudio");
-const volumeSlider = document.getElementById("volumeSlider");
 
-audio.volume = volumeSlider.value;
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("overlay");
+  const audio = document.getElementById("bgAudio");
+  const volumeSlider = document.getElementById("volumeSlider");
 
-overlay.addEventListener("click", () => {
-  audio.play().catch(err => console.log("Audio blocked:", err));
-  overlay.classList.add("hidden");
-});
-
-volumeSlider.addEventListener("input", () => {
   audio.volume = volumeSlider.value;
+
+  overlay.addEventListener("click", () => {
+    audio.play().catch(err => console.log("Audio blocked:", err));
+    overlay.classList.add("hidden");
+  });
+
+  volumeSlider.addEventListener("input", () => {
+    audio.volume = volumeSlider.value;
+  });
 });
 </script>
+
+</body>
+
 
 </body>
 
