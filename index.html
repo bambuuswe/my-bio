@@ -19,10 +19,7 @@ body {
 /* Overlay */
 #overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0,0,0,0.85);
   color: #fff;
   display: flex;
@@ -45,11 +42,9 @@ body {
   text-align: center;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
   transition: transform 0.3s, box-shadow 0.3s;
-  perspective: 1000px;
 }
 .bio-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
 /* Avatar */
@@ -58,35 +53,33 @@ body {
   height: 100px;
   border-radius: 50%;
   margin: 10px auto;
-  object-fit: cover;
   border: 3px solid #fff;
-  display: block;
-  transition: transform 0.3s;
 }
-.avatar:hover { transform: scale(1.1) rotate(5deg); }
 
 /* Text */
-h1 { margin: 10px 0 5px; font-size: 1.8em; color: #DE0000; text-shadow: 0 0 10px #DE0000,0 0 20px #DE0000; }
-h3 { margin: 5px 0 15px; font-weight: 400; color: #cccccc; }
-p { font-size: 1em; margin-bottom: 15px; color: #fff; }
+h1 { color: #DE0000; text-shadow: 0 0 10px #DE0000; }
+h3 { color: #ccc; }
+p { color: #fff; }
 
 /* Links */
 a {
-  display: inline-block;
   padding: 10px 20px;
   background: #ff4d4d;
   color: #fff;
   border-radius: 10px;
   text-decoration: none;
-  transition: transform 0.2s, background 0.2s;
   margin: 5px;
 }
-a:hover { transform: scale(1.1); background: #ff1a1a; }
+a:hover { background: #ff1a1a; }
 
 /* Currently Playing */
-.currently-playing { margin-top: 15px; font-size: 1em; color: #FF0000; font-weight: bold; }
+.currently-playing {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #FF0000;
+}
 
-/* Game icons box */
+/* Game icons */
 .game-icons {
   margin-top: 10px;
   display: flex;
@@ -97,108 +90,136 @@ a:hover { transform: scale(1.1); background: #ff1a1a; }
   width: 50px;
   height: 50px;
   border-radius: 10px;
-  object-fit: cover;
-  box-shadow: 0 0 10px rgba(0,0,0,0.6);
-  transition: transform 0.25s, box-shadow 0.25s, filter 0.25s;
+  transition: 0.25s;
 }
 .game-icons img.highlight {
-  transform: scale(1.2) rotate(-3deg);
+  transform: scale(1.2);
   box-shadow: 0 0 20px #FF0000;
-  filter: brightness(1.3);
 }
 
-/* Volume slider */
-#volumeControl {
+/* Floating menu button */
+#gameMenuBtn {
   position: fixed;
   bottom: 20px;
   right: 20px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #ff4d4d;
   color: #fff;
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 5px;
-  font-size: 1.2em;
+  font-size: 1.5em;
+  cursor: pointer;
+  z-index: 2000;
+}
+
+/* Menu */
+#gameMenu {
+  position: fixed;
+  bottom: 85px;
+  right: 20px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  border-radius: 15px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2000;
+}
+#gameMenu button {
+  background: #ff4d4d;
+  border: none;
+  color: #fff;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+#gameMenu button:hover { background: #ff1a1a; }
+
+/* Volume */
+#volumeControl {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
   z-index: 1001;
 }
-#volumeSlider { cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- Overlay -->
 <div id="overlay">Click to enter ▶</div>
 
-<!-- Audio -->
 <audio id="bgAudio" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Bio Card -->
 <div class="bio-card">
-  <img src="avatar.png" class="avatar" alt="Avatar">
+  <img src="avatar.png" class="avatar">
   <h1>Bambuu</h1>
   <h3>Gamer & YouTuber</h3>
-  <p>Hey there! I'm a small YouTuber who loves gaming and exploring new worlds in my favorite games. I enjoy creating fun content, sharing my adventures, and connecting with fellow gamers. Every day is a chance to level up, learn new tricks, and have a great time along the way!</p>
-  <a href="https://youtube.com/@bambuuspelar" target="_blank">My YouTube</a>
-  <a href="https://discord.com/users/1032996748798480525" target="_blank">My Discord</a>
+  <p>Hey there! I'm a small YouTuber who loves gaming.</p>
 
-  <!-- Currently Playing -->
+  <a href="https://youtube.com/@bambuuspelar" target="_blank">YouTube</a>
+  <a href="https://discord.com/users/1032996748798480525" target="_blank">Discord</a>
+
   <div class="currently-playing">
-    🎮 Currently Playing: <span id="gameText">Roblox</span>
+    🎮 Currently Playing: <span id="gameText">Nothing</span>
   </div>
 
-  <!-- Game icons -->
   <div class="game-icons">
-    <img src="roblox1.jpg" alt="Roblox" data-game="Roblox">
-    <img src="r6.jpg" alt="R6 Siege" data-game="R6 Siege">
-    <img src="minecraft1.jpg" alt="Minecraft" data-game="Minecraft">
-    <img src="ets21.jpg" alt="ETS2" data-game="ETS2">
+    <img src="roblox1.jpg" data-game="Roblox">
+    <img src="r6.jpg" data-game="R6 Siege">
+    <img src="minecraft1.jpg" data-game="Minecraft">
+    <img src="ets21.jpg" data-game="ETS2">
   </div>
 </div>
 
-<!-- Volume Control -->
+<!-- Menu -->
+<div id="gameMenuBtn">🎮</div>
+<div id="gameMenu">
+  <button onclick="setGame('Roblox')">Roblox</button>
+  <button onclick="setGame('R6 Siege')">R6 Siege</button>
+  <button onclick="setGame('Minecraft')">Minecraft</button>
+  <button onclick="setGame('ETS2')">ETS2</button>
+</div>
+
 <div id="volumeControl">
   🔊 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 </div>
 
 <script>
-// Element references
 const overlay = document.getElementById("overlay");
 const audio = document.getElementById("bgAudio");
 const volumeSlider = document.getElementById("volumeSlider");
 const gameText = document.getElementById("gameText");
-const gameIcons = document.querySelectorAll('.game-icons img');
+const gameIcons = document.querySelectorAll(".game-icons img");
+const menuBtn = document.getElementById("gameMenuBtn");
+const menu = document.getElementById("gameMenu");
 
-// Initial volume
 audio.volume = volumeSlider.value;
 
-// Overlay click
-overlay.addEventListener("click", () => {
-  audio.play().catch(err => console.log("Audio blocked:", err));
+overlay.onclick = () => {
+  audio.play();
   overlay.classList.add("hidden");
-  setTimeout(() => overlay.style.display = "none", 800);
-});
+};
 
-// Volume slider
-volumeSlider.addEventListener("input", () => { audio.volume = volumeSlider.value; });
+volumeSlider.oninput = () => audio.volume = volumeSlider.value;
 
-// Currently Playing rotation
-const games = ["Roblox", "R6 Siege", "Minecraft", "ETS2"];
-let currentIndex = 0;
+menuBtn.onclick = () => {
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+};
 
-function updateGame() {
-  const currentGame = games[currentIndex];
-  gameText.textContent = currentGame;
-
-  // Highlight correct icon
-  gameIcons.forEach(img => {
-    img.classList.toggle('highlight', img.dataset.game === currentGame);
-  });
-
-  currentIndex = (currentIndex + 1) % games.length;
+function setGame(game) {
+  gameText.textContent = game;
+  gameIcons.forEach(img =>
+    img.classList.toggle("highlight", img.dataset.game === game)
+  );
+  menu.style.display = "none";
 }
-
-setInterval(updateGame, 3000); // byter spel var 3:e sekund
-updateGame();
 </script>
 </body>
 </html>
