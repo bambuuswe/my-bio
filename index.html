@@ -6,6 +6,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+/* CUSTOM CURSOR */
+* {
+  cursor: url("cursor.png") 16 16, auto;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -15,7 +20,6 @@ body {
   justify-content: center;
   align-items: center;
   background: url('background4.jpg') no-repeat center center / cover;
-  overflow: hidden;
 }
 
 /* Overlay */
@@ -32,7 +36,10 @@ body {
   transition: opacity 0.8s ease;
   z-index: 1000;
 }
-#overlay.hidden { opacity: 0; pointer-events: none; }
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* Bio-card */
 .bio-card {
@@ -61,45 +68,17 @@ body {
   display: block;
 }
 
-/* 🔥 GLITCH NAME 🔥 */
-#glitch {
-  position: relative;
-  color: #DE0000;
-  font-size: 1.8em;
-  text-shadow: 0 0 10px #DE0000;
-}
-#glitch::before,
-#glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  width: 100%;
+/* Text */
+h1 {
+  margin: 10px 0 5px;
+  font-size: 1.9em;
   color: #ff0000;
-  overflow: hidden;
+  text-shadow: 0 0 10px red, 0 0 20px red;
 }
-#glitch::before {
-  top: -2px;
-  animation: glitchTop 2s infinite linear alternate-reverse;
-}
-#glitch::after {
-  top: 2px;
-  animation: glitchBottom 1.5s infinite linear alternate-reverse;
-}
+h3 { color: #ccc; font-weight: 400; }
+p { color: #fff; font-size: 0.95em; }
 
-@keyframes glitchTop {
-  0% { clip: rect(0,9999px,0,0); }
-  20% { clip: rect(0,9999px,30px,0); }
-  40% { clip: rect(10px,9999px,40px,0); }
-}
-@keyframes glitchBottom {
-  0% { clip: rect(0,9999px,0,0); }
-  20% { clip: rect(20px,9999px,60px,0); }
-  40% { clip: rect(5px,9999px,25px,0); }
-}
-
-h3 { color: #ccc; }
-p { color: #fff; }
-
+/* Links */
 a {
   display: inline-block;
   padding: 10px 20px;
@@ -108,32 +87,18 @@ a {
   border-radius: 10px;
   text-decoration: none;
   margin: 5px;
+  transition: transform 0.2s, background 0.2s;
 }
-a:hover { background: #ff1a1a; }
+a:hover {
+  transform: scale(1.1);
+  background: #ff1a1a;
+}
 
 /* Currently Playing */
 .currently-playing {
   margin-top: 15px;
-  color: #FF0000;
+  color: #ff0000;
   font-weight: bold;
-}
-
-/* Game icons */
-.game-icons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.game-icons img {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  transition: 0.3s;
-}
-.game-icons img.highlight {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px red;
 }
 
 /* Volume */
@@ -144,92 +109,69 @@ a:hover { background: #ff1a1a; }
   color: #fff;
   z-index: 1001;
 }
-
-/* ✨ PARTICLES ✨ */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  background: red;
-  border-radius: 50%;
-  pointer-events: none;
-  box-shadow: 0 0 10px red;
-  animation: fade 0.6s linear forwards;
-}
-@keyframes fade {
-  to {
-    opacity: 0;
-    transform: scale(2);
-  }
-}
 </style>
 </head>
 
 <body>
 
+<!-- Overlay -->
 <div id="overlay">Click to enter ▶</div>
 
+<!-- Audio -->
 <audio id="bgAudio" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
+<audio id="clickSound">
+  <source src="click.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Bio Card -->
 <div class="bio-card">
   <img src="avatar.png" class="avatar">
-  <h1 id="glitch" data-text="Bambuu">Bambuu</h1>
+  <h1>Bambuu</h1>
   <h3>Gamer & YouTuber</h3>
-  <p>Hey there! I'm a small YouTuber who loves gaming and exploring new worlds.</p>
+  <p>
+    I'm a small YouTuber who loves gaming, vibes, and building cool stuff.
+    Always leveling up 🎮🔥
+  </p>
 
   <a href="https://youtube.com/@bambuuspelar" target="_blank">YouTube</a>
   <a href="https://discord.com/users/1032996748798480525" target="_blank">Discord</a>
 
   <div class="currently-playing">
-    🎮 Playing: <span id="gameText">Roblox</span>
-  </div>
-
-  <div class="game-icons">
-    <img src="roblox1.jpg" data-game="Roblox">
-    <img src="r6.jpg" data-game="R6 Siege">
-    <img src="minecraft1.jpg" data-game="Minecraft">
-    <img src="ets21.jpg" data-game="ETS2">
+    🎮 Currently Playing: Roblox
   </div>
 </div>
 
+<!-- Volume -->
 <div id="volumeControl">
   🔊 <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
 </div>
 
 <script>
 const overlay = document.getElementById("overlay");
-const audio = document.getElementById("bgAudio");
+const bgAudio = document.getElementById("bgAudio");
+const clickSound = document.getElementById("clickSound");
 const volumeSlider = document.getElementById("volumeSlider");
-const gameText = document.getElementById("gameText");
-const icons = document.querySelectorAll(".game-icons img");
 
-audio.volume = volumeSlider.value;
-
-overlay.onclick = () => {
-  audio.play();
+// Start audio
+overlay.addEventListener("click", () => {
+  bgAudio.volume = volumeSlider.value;
+  bgAudio.play().catch(() => {});
   overlay.classList.add("hidden");
-};
+  setTimeout(() => overlay.remove(), 800);
+});
 
-volumeSlider.oninput = () => audio.volume = volumeSlider.value;
+// Volume
+volumeSlider.addEventListener("input", () => {
+  bgAudio.volume = volumeSlider.value;
+});
 
-const games = ["Roblox","R6 Siege","Minecraft","ETS2"];
-let i = 0;
-setInterval(() => {
-  gameText.textContent = games[i];
-  icons.forEach(img => img.classList.toggle("highlight", img.dataset.game === games[i]));
-  i = (i+1)%games.length;
-},3000);
-
-/* ✨ particles after mouse */
-document.addEventListener("mousemove", e => {
-  const p = document.createElement("div");
-  p.className = "particle";
-  p.style.left = e.clientX + "px";
-  p.style.top = e.clientY + "px";
-  document.body.appendChild(p);
-  setTimeout(() => p.remove(), 600);
+// Click sound (global)
+document.addEventListener("click", () => {
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
 });
 </script>
 
