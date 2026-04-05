@@ -1,4 +1,4 @@
-¨<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
@@ -74,16 +74,11 @@ body {
   padding: 35px;
   position: relative;
   transition: border 0.3s, box-shadow 0.3s;
-  transform-style: preserve-3d;
 }
 
-/* MUSIK-KORT (UTAN 3D-ROTATION) */
-.music-card { 
-    display: flex; 
-    align-items: center; 
-    gap: 30px; 
-    padding: 25px 45px; 
-    transform: none !important; /* Tvingar kortet att vara statiskt */
+/* STATISKA KORT (INGEN ANIMATION) */
+.static-card {
+    transform: none !important;
 }
 
 #playBtn {
@@ -102,11 +97,12 @@ input[type=range] { accent-color: var(--red); height: 5px; width: 100%; cursor: 
 h1 { font-family: 'Rajdhani'; font-size: 2.8rem; color: var(--red); transform: translateZ(40px); }
 
 .link-btn {
-  background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
   color: #fff; padding: 14px; border-radius: 12px; text-decoration: none;
-  font-family: 'Rajdhani'; font-weight: 700; text-align: center; display: block; margin-bottom: 5px; transform: translateZ(20px);
+  font-family: 'Rajdhani'; font-weight: 700; text-align: center; display: block; 
+  margin-bottom: 5px; transition: 0.3s;
 }
-.link-btn:hover { background: var(--red); transform: translateZ(40px); }
+.link-btn:hover { background: var(--red); box-shadow: 0 0 15px var(--red-glow); transform: scale(1.02); }
 
 .activity-card { display: flex; align-items: center; gap: 30px; transform-style: preserve-3d; }
 .game-icon { width: 110px; height: 110px; border-radius: 20px; border: 1px solid var(--red); object-fit: cover; transform: translateZ(20px); }
@@ -153,10 +149,10 @@ h1 { font-family: 'Rajdhani'; font-size: 2.8rem; color: var(--red); transform: t
       <p style="margin-top:15px; color:#ccc; border-left:2px solid var(--red); padding-left:15px;">Gamer and Youtuber</p>
     </div>
 
-    <div class="card anim-card links-card">
+    <div class="card static-card links-card">
       <a href="https://youtube.com/@bambuuspelar" target="_blank" class="link-btn">YOUTUBE</a>
       <a href="https://discord.com/users/1032996748798480525" target="_blank" class="link-btn">DISCORD</a>
-      <a href="https://steamcommunity.com/id/pellehall/" target="_blank" class="link-btn">DISCORD</a>
+      <a href="https://steamcommunity.com/id/pellehall/" target="_blank" class="link-btn">STEAM</a>
     </div>
   </div>
 
@@ -169,7 +165,7 @@ h1 { font-family: 'Rajdhani'; font-size: 2.8rem; color: var(--red); transform: t
     </div>
   </div>
 
-  <div class="card music-card">
+  <div class="card static-card music-card" style="display:flex; align-items:center; gap:30px; padding:25px 45px;">
     <button id="playBtn">▶</button>
     <div class="vol-box">
         <div style="display:flex; justify-content:space-between; font-family:'Rajdhani'; font-size:0.7rem; color:var(--red);">
@@ -214,7 +210,7 @@ volSlider.oninput = (e) => {
   volPerc.innerText = Math.round(e.target.value * 100) + "%";
 };
 
-// 3D ANIMATION (Gäller endast element med klassen .anim-card)
+// 3D ANIMATION (Gäller nu bara profil och discord-kort)
 let mX = window.innerWidth/2, mY = window.innerHeight/2;
 let cX = mX, cY = mY;
 
@@ -230,7 +226,6 @@ function animate() {
   const rY = (cX - window.innerWidth / 2) / 35;
   const rX = -(cY - window.innerHeight / 2) / 25;
 
-  // VIKTIGT: Vi animerar bara profil, länkar och discord - inte musiken!
   document.querySelectorAll('.anim-card').forEach(card => {
     card.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
   });
