@@ -9,8 +9,8 @@
 :root {
   --red: #ff0000;
   --red-glow: rgba(255, 0, 0, 0.6);
-  --card-bg: rgba(5, 5, 10, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(5, 5, 10, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
@@ -25,244 +25,586 @@ body {
   perspective: 1200px;
 }
 
-/* BAKGRUND */
+/* ── BAKGRUND ── */
 .bg-wrapper {
   position: fixed; inset: 0; z-index: -1;
   background: url('background4.jpg') center/cover no-repeat;
-  filter: brightness(0.25) contrast(1.2);
+  filter: brightness(0.22) contrast(1.3);
 }
 
+/* Pulsande röd glöd i bakgrunden */
+.bg-pulse {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 85%, rgba(255,0,0,0.09) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 85% 15%, rgba(255,0,0,0.06) 0%, transparent 70%);
+  animation: bgPulse 5s ease-in-out infinite alternate;
+}
+@keyframes bgPulse {
+  from { opacity: 0.5; }
+  to   { opacity: 1; }
+}
+
+/* ── VIGNETTE ── */
+.vignette {
+  position: fixed; inset: 0; z-index: 52; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,0.92) 100%);
+}
+
+/* ── GRAIN / NOISE ── */
+.grain {
+  position: fixed; inset: -50%; width: 200%; height: 200%;
+  pointer-events: none; z-index: 51;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  animation: grainMove 0.1s steps(1) infinite;
+}
+@keyframes grainMove {
+  0%   { transform: translate(0,0); }
+  10%  { transform: translate(-3%,-5%); }
+  20%  { transform: translate(-6%,3%); }
+  30%  { transform: translate(5%,-3%); }
+  40%  { transform: translate(-4%,6%); }
+  50%  { transform: translate(-2%,2%); }
+  60%  { transform: translate(5%,4%); }
+  70%  { transform: translate(1%,-6%); }
+  80%  { transform: translate(-4%,1%); }
+  90%  { transform: translate(4%,4%); }
+  100% { transform: translate(2%,-2%); }
+}
+
+/* ── SCANLINES (rörlig CRT) ── */
 .scanlines {
-  position: fixed; inset: 0; z-index: 1;
-  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.05) 50%);
-  background-size: 100% 4px;
-  pointer-events: none;
+  position: fixed; inset: 0; z-index: 49; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.07) 2px,
+    rgba(0,0,0,0.07) 4px
+  );
+  animation: scanScroll 10s linear infinite;
+}
+@keyframes scanScroll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 100px; }
 }
 
-/* START-SKÄRM */
+/* ── START-SKÄRM ── */
 #init-overlay {
   position: fixed; inset: 0; z-index: 10000;
   background: #000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 30px;
   transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+.init-label {
+  font-family: 'Rajdhani'; font-size: 0.65rem; letter-spacing: 5px;
+  color: rgba(255,0,0,0.5); text-transform: uppercase;
+  animation: blink 2s ease-in-out infinite;
 }
 
 .init-btn {
   background: transparent; border: 1px solid var(--red); color: var(--red);
   padding: 20px 60px; font-family: 'Rajdhani'; font-weight: 700; font-size: 1.5rem;
-  letter-spacing: 12px; transition: 0.5s; text-transform: uppercase;
+  letter-spacing: 12px; transition: 0.4s; text-transform: uppercase;
+  position: relative; overflow: hidden;
 }
-.init-btn:hover { background: var(--red); color: #fff; box-shadow: 0 0 50px var(--red); }
+.init-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+  z-index: -1;
+}
+.init-btn:hover::after { transform: scaleX(1); }
+.init-btn:hover { color: #fff; box-shadow: 0 0 60px rgba(255,0,0,0.4); }
 
-/* DASHBOARD */
+/* ── DASHBOARD ── */
 .container {
-  display: flex; flex-direction: column; gap: 20px;
+  display: flex; flex-direction: column; gap: 18px;
   width: 95%; max-width: 800px;
-  z-index: 10; opacity: 0; transform: scale(0.95);
+  z-index: 10; opacity: 0; transform: scale(0.95) translateY(10px);
   transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
   transform-style: preserve-3d;
 }
-.container.active { opacity: 1; transform: scale(1); }
+.container.active { opacity: 1; transform: scale(1) translateY(0); }
 
-.row-top { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; transform-style: preserve-3d; }
+.row-top { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; transform-style: preserve-3d; }
 
+/* ── KORT ── */
 .card {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 35px;
+  border-radius: 22px;
+  padding: 32px;
   position: relative;
-  transition: border 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* STATISKA KORT (INGEN ANIMATION) */
-.static-card {
-    transform: none !important;
+/* Shimmer-linje längst upp på varje kort */
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,0,0,0.7) 50%, transparent 100%);
+  animation: shimmer 4s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes shimmer {
+  0%,100% { opacity: 0; transform: scaleX(0.3); }
+  50%      { opacity: 1; transform: scaleX(1); }
+}
+
+/* Corner brackets */
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 12px; right: 12px;
+  width: 14px; height: 14px;
+  border-right: 1.5px solid rgba(255,0,0,0.5);
+  border-bottom: 1.5px solid rgba(255,0,0,0.5);
+  pointer-events: none;
+}
+
+/* Extra bracket: top-left via wrapper-div trick, använda pseudo på inner-el */
+.bracket-tl {
+  position: absolute; top: 12px; left: 12px;
+  width: 14px; height: 14px;
+  border-left: 1.5px solid rgba(255,0,0,0.5);
+  border-top: 1.5px solid rgba(255,0,0,0.5);
+  pointer-events: none;
+}
+
+.static-card { transform: none !important; }
+
+/* ── SYS-LABEL ── */
+.sys-label {
+  font-family: 'Rajdhani'; font-size: 0.62rem;
+  letter-spacing: 3px; color: var(--red); opacity: 0.65;
+  margin-bottom: 10px; text-transform: uppercase;
+}
+
+/* ── GLITCH TITEL ── */
+h1 {
+  font-family: 'Rajdhani'; font-size: 2.8rem; font-weight: 700;
+  color: var(--red);
+  position: relative; display: inline-block;
+  transform: translateZ(40px);
+  animation: glitchMain 6s infinite;
+}
+h1::before, h1::after {
+  content: attr(data-text);
+  position: absolute; top: 0; left: 0;
+  width: 100%;
+}
+h1::before {
+  color: #00ffff;
+  animation: glitchTop 6s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+h1::after {
+  color: #ff00ff;
+  animation: glitchBot 6s infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+@keyframes glitchMain {
+  0%,93%,100% { transform: translateZ(40px) none; }
+  94% { transform: translateZ(40px) skewX(-3deg) translateX(2px); }
+  96% { transform: translateZ(40px) skewX(3deg) translateX(-2px); }
+  98% { transform: translateZ(40px) skewX(-1deg); }
+}
+@keyframes glitchTop {
+  0%,93%,100% { opacity: 0; transform: none; }
+  94% { opacity: 0.85; transform: translate(-4px, -2px); }
+  96% { opacity: 0.85; transform: translate(4px, 1px); }
+  98% { opacity: 0; }
+}
+@keyframes glitchBot {
+  0%,93%,100% { opacity: 0; transform: none; }
+  94% { opacity: 0.85; transform: translate(4px, 2px); }
+  96% { opacity: 0.85; transform: translate(-4px, -1px); }
+  98% { opacity: 0; }
+}
+
+/* ── TYPING BIO ── */
+.typing-wrap {
+  margin-top: 14px;
+  border-left: 2px solid var(--red);
+  padding-left: 14px;
+  color: #bbb;
+  font-size: 0.9rem;
+  overflow: hidden;
+  display: flex; align-items: center; gap: 4px;
+}
+.typing-text {
+  overflow: hidden; white-space: nowrap;
+  width: 0;
+  animation: typeIn 1.8s steps(20) 1.2s forwards;
+}
+@keyframes typeIn {
+  from { width: 0; }
+  to   { width: 16ch; }
+}
+.cursor-blink {
+  display: inline-block; width: 2px; height: 0.9em;
+  background: var(--red); margin-left: 2px;
+  animation: cursorBlink 0.8s step-end infinite;
+}
+@keyframes cursorBlink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ── AVATAR ── */
+.avatar-wrap {
+  width: 85px; height: 85px; border-radius: 50%;
+  border: 2px solid var(--red);
+  box-shadow: 0 0 25px rgba(255,0,0,0.35), 0 0 60px rgba(255,0,0,0.1);
+  padding: 3px; margin-bottom: 18px;
+  transform: translateZ(30px);
+  animation: avatarPulse 4s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(255,0,0,0.3), 0 0 50px rgba(255,0,0,0.08); }
+  50%      { box-shadow: 0 0 35px rgba(255,0,0,0.55), 0 0 80px rgba(255,0,0,0.2); }
+}
+.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+/* ── LINK BTNS ── */
+.link-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: #fff; padding: 13px 14px; border-radius: 11px;
+  text-decoration: none;
+  font-family: 'Rajdhani'; font-weight: 700; letter-spacing: 2px;
+  font-size: 0.85rem; text-align: center; display: block;
+  margin-bottom: 8px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, color 0.3s, letter-spacing 0.3s;
+}
+.link-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+.link-btn:hover::after { transform: scaleX(1); }
+.link-btn:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 18px rgba(255,0,0,0.3);
+  letter-spacing: 4px;
+}
+
+/* ── ACTIVITY CARD ── */
+.activity-card {
+  display: flex; align-items: center; gap: 28px;
+  transform-style: preserve-3d;
+}
+.game-icon {
+  width: 100px; height: 100px; border-radius: 18px;
+  border: 1px solid rgba(255,0,0,0.5);
+  object-fit: cover;
+  transform: translateZ(20px);
+  box-shadow: 0 0 20px rgba(255,0,0,0.2);
+  transition: box-shadow 0.3s;
+}
+.game-icon:hover { box-shadow: 0 0 35px rgba(255,0,0,0.5); }
+
+.status-dot {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  margin-right: 6px;
+  animation: blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.15; } }
+
+/* ── MUSIC CARD ── */
+.music-card {
+  display: flex; align-items: center;
+  gap: 28px; padding: 22px 38px;
 }
 
 #playBtn {
-  width: 55px; height: 55px; border-radius: 50%; border: none; background: #fff;
-  color: #000; font-size: 1.4rem; transition: 0.3s; flex-shrink: 0;
+  width: 52px; height: 52px; border-radius: 50%;
+  border: none; background: #fff; color: #000;
+  font-size: 1.3rem; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
+  transition: 0.3s; position: relative;
 }
-#playBtn:hover { background: var(--red); color: #fff; transform: scale(1.1); box-shadow: 0 0 20px var(--red); }
+#playBtn::after {
+  content: '';
+  position: absolute; inset: -3px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: playRing 2s ease-in-out infinite;
+}
+@keyframes playRing {
+  0%,100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.2); opacity: 0; }
+}
+#playBtn:hover { background: var(--red); color: #fff; transform: scale(1.1); box-shadow: 0 0 25px rgba(255,0,0,0.6); }
 
 .vol-box { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-input[type=range] { accent-color: var(--red); height: 5px; width: 100%; cursor: none !important; }
 
-/* PROFIL & DISCORD (MED 3D) */
-.avatar-wrap { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--red); padding: 4px; margin-bottom: 20px; transform: translateZ(30px); }
-.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-h1 { font-family: 'Rajdhani'; font-size: 2.8rem; color: var(--red); transform: translateZ(40px); }
-
-.link-btn {
-  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-  color: #fff; padding: 14px; border-radius: 12px; text-decoration: none;
-  font-family: 'Rajdhani'; font-weight: 700; text-align: center; display: block; 
-  margin-bottom: 5px; transition: 0.3s;
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 3px;
+  background: rgba(255,255,255,0.12); border-radius: 2px;
+  outline: none;
 }
-.link-btn:hover { background: var(--red); box-shadow: 0 0 15px var(--red-glow); transform: scale(1.02); }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  cursor: none;
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--red); border: none;
+  box-shadow: 0 0 8px var(--red);
+}
 
-.activity-card { display: flex; align-items: center; gap: 30px; transform-style: preserve-3d; }
-.game-icon { width: 110px; height: 110px; border-radius: 20px; border: 1px solid var(--red); object-fit: cover; transform: translateZ(20px); }
-
-/* CURSOR & TRACKER */
+/* ── CUSTOM CURSOR ── */
 #cursor {
-  position: fixed; width: 20px; height: 20px; border: 2px solid #fff;
-  border-radius: 50%; pointer-events: none; z-index: 20000;
+  position: fixed; pointer-events: none; z-index: 20000;
   transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
 }
-.view-tracker {
-    position: fixed; bottom: 30px; left: 30px; z-index: 1000;
-    background: rgba(0,0,0,0.6); padding: 12px 20px; border-radius: 50px;
-    border: 1px solid var(--glass-border); font-family: 'Rajdhani';
+.cursor-ring {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 1.5px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s, border-color 0.2s;
+}
+.cursor-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #fff;
 }
 
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* ── VIEW TRACKER ── */
+.view-tracker {
+  position: fixed; bottom: 25px; left: 25px; z-index: 1000;
+  background: rgba(0,0,0,0.7); padding: 10px 18px;
+  border-radius: 50px; border: 1px solid var(--glass-border);
+  font-family: 'Rajdhani'; font-size: 0.8rem; letter-spacing: 2px;
+  backdrop-filter: blur(10px);
+}
+
+/* ── CARD HOVER GLOW ── */
+.card:hover {
+  border-color: rgba(255,0,0,0.3);
+  box-shadow: 0 0 40px rgba(255,0,0,0.07);
+}
 </style>
 </head>
 <body>
 
+<!-- INIT OVERLAY -->
 <div id="init-overlay">
+  <div class="init-label">// sys.bambuu.v3 — awaiting input</div>
   <button class="init-btn" onclick="launch()">Initialize System</button>
 </div>
 
+<!-- BAKGRUND -->
 <div class="bg-wrapper"></div>
+<div class="bg-pulse"></div>
+<div class="grain"></div>
 <div class="scanlines"></div>
-<div id="cursor"></div>
+<div class="vignette"></div>
 
-<audio id="audio" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-<div class="view-tracker">
-    <span style="color:var(--red)">👁</span> <span id="v-count">0000</span>
+<!-- CURSOR -->
+<div id="cursor">
+  <div class="cursor-ring">
+    <div class="cursor-dot"></div>
+  </div>
 </div>
 
+<!-- AUDIO -->
+<audio id="audio" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- VIEW TRACKER -->
+<div class="view-tracker">
+  <span style="color:var(--red)">👁</span> <span id="v-count">0000</span>
+</div>
+
+<!-- DASHBOARD -->
 <div class="container" id="dashboard">
-  
+
   <div class="row-top">
+
+    <!-- PROFIL -->
     <div class="card anim-card">
-      <div class="avatar-wrap"><img src="avatar.png" class="avatar-img"></div>
-      <h1>BAMBUU</h1>
-      <p style="margin-top:15px; color:#ccc; border-left:2px solid var(--red); padding-left:15px;">Gamer and Youtuber</p>
+      <div class="bracket-tl"></div>
+      <div class="sys-label">// profile_node</div>
+      <div class="avatar-wrap">
+        <img src="avatar.png" class="avatar-img" alt="avatar">
+      </div>
+      <h1 data-text="BAMBUU">BAMBUU</h1>
+      <div class="typing-wrap">
+        <span class="typing-text">Gamer and Youtuber</span>
+        <span class="cursor-blink"></span>
+      </div>
     </div>
 
-    <div class="card static-card links-card">
+    <!-- LINKS -->
+    <div class="card static-card">
+      <div class="bracket-tl"></div>
+      <div class="sys-label">// links</div>
       <a href="https://youtube.com/@bambuuspelar" target="_blank" class="link-btn">YOUTUBE</a>
       <a href="https://discord.com/users/1032996748798480525" target="_blank" class="link-btn">DISCORD</a>
       <a href="https://steamcommunity.com/id/pellehall/" target="_blank" class="link-btn">STEAM</a>
     </div>
+
   </div>
 
+  <!-- ACTIVITY -->
   <div class="card anim-card activity-card">
-    <img src="avatar.png" id="g-img" class="game-icon">
+    <div class="bracket-tl"></div>
+    <img src="avatar.png" id="g-img" class="game-icon" alt="game">
     <div class="act-info">
-      <div style="color:var(--red); font-weight:700; font-size:0.7rem; letter-spacing:2px; margin-bottom:5px;">LIVE_ACTIVITY</div>
-      <h2 id="g-name" style="font-family:'Rajdhani'; font-size:1.8rem;">Loading...</h2>
-      <p id="g-det" style="color:#888;">Awaiting Discord signal</p>
+      <div class="sys-label">
+        <span class="status-dot"></span>live_activity
+      </div>
+      <h2 id="g-name" style="font-family:'Rajdhani'; font-size:1.8rem; font-weight:700;">Loading...</h2>
+      <p id="g-det" style="color:#666; font-size:0.85rem; margin-top:3px;">Awaiting Discord signal</p>
     </div>
   </div>
 
-  <div class="card static-card music-card" style="display:flex; align-items:center; gap:30px; padding:25px 45px;">
+  <!-- MUSIC -->
+  <div class="card static-card music-card">
+    <div class="bracket-tl"></div>
     <button id="playBtn">▶</button>
     <div class="vol-box">
-        <div style="display:flex; justify-content:space-between; font-family:'Rajdhani'; font-size:0.7rem; color:var(--red);">
-            <span>AUDIO_OUTPUT</span>
-            <span id="vol-perc">10%</span>
-        </div>
-        <input type="range" id="vol" min="0" max="1" step="0.01" value="0.10">
+      <div style="display:flex; justify-content:space-between; font-family:'Rajdhani'; font-size:0.65rem; letter-spacing:2px; color:rgba(255,0,0,0.7);">
+        <span>AUDIO_OUTPUT</span>
+        <span id="vol-perc">10%</span>
+      </div>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="0.10">
     </div>
   </div>
 
 </div>
 
 <script>
-const audio = document.getElementById('audio');
-const playBtn = document.getElementById('playBtn');
-const volSlider = document.getElementById('vol');
-const volPerc = document.getElementById('vol-perc');
-const dashboard = document.getElementById('dashboard');
-const cursor = document.getElementById('cursor');
+const audio    = document.getElementById('audio');
+const playBtn  = document.getElementById('playBtn');
+const volSlider= document.getElementById('vol');
+const volPerc  = document.getElementById('vol-perc');
+const dashboard= document.getElementById('dashboard');
+const cursorEl = document.getElementById('cursor');
+const cursorRing = cursorEl.querySelector('.cursor-ring');
 
 audio.volume = 0.10;
 
+/* ── LAUNCH ── */
 function launch() {
   audio.play();
-  playBtn.innerText = '⏸';
-  document.getElementById('init-overlay').style.opacity = '0';
+  playBtn.textContent = '⏸';
+  const overlay = document.getElementById('init-overlay');
+  overlay.style.opacity = '0';
   setTimeout(() => {
-    document.getElementById('init-overlay').style.display = 'none';
+    overlay.style.display = 'none';
     dashboard.classList.add('active');
   }, 800);
 }
 
-// MUSIC LOGIC
-playBtn.onclick = (e) => {
+/* ── MUSIC ── */
+playBtn.addEventListener('click', (e) => {
   e.stopPropagation();
-  if (audio.paused) { audio.play(); playBtn.innerText = '⏸'; }
-  else { audio.pause(); playBtn.innerText = '▶'; }
-};
+  if (audio.paused) { audio.play(); playBtn.textContent = '⏸'; }
+  else              { audio.pause(); playBtn.textContent = '▶'; }
+});
 
-volSlider.oninput = (e) => {
+volSlider.addEventListener('input', (e) => {
   audio.volume = e.target.value;
-  volPerc.innerText = Math.round(e.target.value * 100) + "%";
-};
+  volPerc.textContent = Math.round(e.target.value * 100) + '%';
+});
 
-// 3D ANIMATION (Gäller nu bara profil och discord-kort)
-let mX = window.innerWidth/2, mY = window.innerHeight/2;
+/* ── CUSTOM CURSOR ── */
+let mX = window.innerWidth / 2;
+let mY = window.innerHeight / 2;
 let cX = mX, cY = mY;
 
 document.addEventListener('mousemove', (e) => {
   mX = e.clientX; mY = e.clientY;
-  cursor.style.left = mX + 'px';
-  cursor.style.top = mY + 'px';
+  cursorEl.style.left = mX + 'px';
+  cursorEl.style.top  = mY + 'px';
 });
 
+/* Cursor scale på hover-bara element */
+document.querySelectorAll('button, a, input').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursorRing.style.transform = 'scale(1.8)';
+    cursorRing.style.borderColor = 'var(--red)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursorRing.style.transform = 'scale(1)';
+    cursorRing.style.borderColor = '#fff';
+  });
+});
+
+/* ── 3D TILT (bara anim-cards) ── */
+let smoothX = window.innerWidth / 2;
+let smoothY = window.innerHeight / 2;
+
 function animate() {
-  cX += (mX - cX) * 0.08;
-  cY += (mY - cY) * 0.08;
-  const rY = (cX - window.innerWidth / 2) / 35;
-  const rX = -(cY - window.innerHeight / 2) / 25;
+  smoothX += (mX - smoothX) * 0.07;
+  smoothY += (mY - smoothY) * 0.07;
+
+  const rY = (smoothX - window.innerWidth / 2) / 30;
+  const rX = -(smoothY - window.innerHeight / 2) / 22;
 
   document.querySelectorAll('.anim-card').forEach(card => {
     card.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
   });
+
   requestAnimationFrame(animate);
 }
 animate();
 
-// DISCORD LANYARD
+/* ── DISCORD LANYARD ── */
 async function fetchDiscord() {
   try {
-    const res = await fetch(`https://api.lanyard.rest/v1/users/1032996748798480525`);
+    const res  = await fetch('https://api.lanyard.rest/v1/users/1032996748798480525');
     const { data } = await res.json();
     const activity = data.activities.find(a => a.type === 0);
     if (activity) {
       document.getElementById('g-name').textContent = activity.name;
-      document.getElementById('g-det').textContent = activity.details || "In-game";
+      document.getElementById('g-det').textContent  = activity.details || 'In-game';
       if (activity.assets && activity.assets.large_image) {
-          document.getElementById('g-img').src = activity.assets.large_image.startsWith("mp:external") 
-          ? activity.assets.large_image.replace(/mp:external\/.*\/https\//, 'https://')
-          : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+        const img = activity.assets.large_image;
+        document.getElementById('g-img').src = img.startsWith('mp:external')
+          ? img.replace(/mp:external\/.*\/https\//, 'https://')
+          : `https://cdn.discordapp.com/app-assets/${activity.application_id}/${img}.png`;
       }
+    } else {
+      document.getElementById('g-name').textContent = 'Not in-game';
+      document.getElementById('g-det').textContent  = 'Chillin';
     }
   } catch (e) {}
 }
 setInterval(fetchDiscord, 10000);
 fetchDiscord();
 
-// VIEWS
+/* ── VIEW COUNTER ── */
 async function updateViews() {
-    try {
-        const res = await fetch(`https://api.counterapi.dev/v1/bambuu-final-os/visits/up`);
-        const data = await res.json();
-        document.getElementById('v-count').innerText = data.count.toString().padStart(4, '0');
-    } catch (e) { document.getElementById('v-count').innerText = "0001"; }
+  try {
+    const res  = await fetch('https://api.counterapi.dev/v1/bambuu-final-os/visits/up');
+    const data = await res.json();
+    document.getElementById('v-count').textContent = data.count.toString().padStart(4, '0');
+  } catch (e) {
+    document.getElementById('v-count').textContent = '0001';
+  }
 }
 updateViews();
 </script>
-
 </body>
 </html>
